@@ -11,6 +11,19 @@ jobs:
             - name: Checkout repo
               uses: actions/checkout@v4
 
+            - name: Free disk space on runner
+              run: |
+                  echo "Disk before:"
+                  df -h
+
+                  # These directories eat tens of GB and are not needed for your build
+                  sudo rm -rf /usr/share/dotnet
+                  sudo rm -rf /opt/ghc
+                  sudo rm -rf /opt/hostedtoolcache
+
+                  echo "Disk after cleanup:"
+                  df -h
+
             - name: Install Cog CLI
               run: |
                   sudo curl -L \
