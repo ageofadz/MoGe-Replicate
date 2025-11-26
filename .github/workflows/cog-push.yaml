@@ -18,17 +18,12 @@ jobs:
               with:
                   python-version: "3.11"
 
-            - name: Install Cog
-              run: |
-                  pip install --upgrade pip
-                  pip install cog
-
-            - name: Log in to Replicate
+            - name: Install Cog and push
               env:
                   REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
               run: |
-                  cog login --token "$REPLICATE_API_TOKEN"
-
-            - name: Build and push Cog model
-              run: |
+                  python -m pip install --upgrade pip
+                  python -m pip install cog
+                  cog --version
+                  cog login --token "${{ secrets.REPLICATE_API_TOKEN }}"
                   cog push ${{ secrets.REPLICATE_MODEL_ID }}
