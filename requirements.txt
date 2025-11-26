@@ -1,0 +1,6 @@
+torch
+torchvision
+opencv-python
+numpy
+trimesh
+git+https://github.com/microsoft/MoGe.git

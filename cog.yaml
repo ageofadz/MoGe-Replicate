@@ -1,0 +1,15 @@
+build:
+  gpu: true
+  cuda: "12.1"
+  cog_runtime: true
+  system_packages:
+    - libgl1
+    - libglib2.0-0
+    - git
+  run:
+    - pip install --upgrade pip
+    - pip install "torch==2.5.1"
+    - pip install opencv-python numpy trimesh
+    - pip install "git+https://github.com/microsoft/MoGe.git"
+
+predict: "predict.py:Predictor"
