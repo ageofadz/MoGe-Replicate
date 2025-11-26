@@ -1,32 +1,27 @@
 name: Build and push Cog model to Replicate
 
 on:
-    workflow_dispatch: # run manually from Actions tab
-    # or uncomment this if you want it on every push to main:
-    # push:
-    #   branches: [ main ]
+    workflow_dispatch: # run manually from the Actions tab
 
 jobs:
     build-and-push:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout
+            - name: Checkout repo
               uses: actions/checkout@v4
 
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version: "3.11"
-
-            # This is the marketplace action you linked:
-            - name: Set up Cog
-              uses: replicate/setup-cog@v1
+            - name: Install Cog CLI
+              run: |
+                  sudo curl -L \
+                    "https://github.com/replicate/cog/releases/latest/download/cog_$(uname -s)_$(uname -m)" \
+                    -o /usr/local/bin/cog
+                  sudo chmod +x /usr/local/bin/cog
+                  cog --version
 
             - name: Build and push model
               env:
                   REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
               run: |
-                  cog --version
-                  cog login --token "$REPLICATE_API_TOKEN"
+                  cog login --token "${{ secrets.REPLICATE_API_TOKEN }}"
                   cog push ${{ secrets.REPLICATE_MODEL_ID }}
