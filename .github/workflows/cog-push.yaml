@@ -1,9 +1,10 @@
 name: Build and push Cog model to Replicate
 
 on:
-    workflow_dispatch: # manual trigger
-    push:
-        branches: [main] # optional: also run on push to main
+    workflow_dispatch: # run manually from Actions tab
+    # or uncomment this if you want it on every push to main:
+    # push:
+    #   branches: [ main ]
 
 jobs:
     build-and-push:
@@ -18,17 +19,14 @@ jobs:
               with:
                   python-version: "3.11"
 
-            - name: Install Cog and push
+            # This is the marketplace action you linked:
+            - name: Set up Cog
+              uses: replicate/setup-cog@v1
+
+            - name: Build and push model
               env:
                   REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
               run: |
-                  python -m pip install --upgrade pip
-                  # install cog to the user site (which goes under ~/.local/bin)
-                  python -m pip install --user cog
-
-                  # make sure ~/.local/bin is on PATH so `cog` is visible
-                  export PATH="$HOME/.local/bin:$PATH"
-
                   cog --version
-                  cog login --token "${{ secrets.REPLICATE_API_TOKEN }}"
+                  cog login --token "$REPLICATE_API_TOKEN"
                   cog push ${{ secrets.REPLICATE_MODEL_ID }}
