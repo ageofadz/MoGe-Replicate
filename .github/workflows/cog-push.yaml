@@ -1,7 +1,7 @@
 name: Build and push Cog model to Replicate
 
 on:
-    workflow_dispatch: # run manually from the Actions tab
+    workflow_dispatch:
 
 jobs:
     build-and-push:
@@ -21,7 +21,10 @@ jobs:
 
             - name: Build and push model
               env:
-                  REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+                  REPLICATE_LOGIN_TOKEN: ${{ secrets.REPLICATE_LOGIN_TOKEN }}
               run: |
-                  cog login --token "${{ secrets.REPLICATE_API_TOKEN }}"
+                  # login via stdin
+                  echo "${{ secrets.REPLICATE_LOGIN_TOKEN }}" | cog login --token-stdin
+
+                  # now push your model
                   cog push ${{ secrets.REPLICATE_MODEL_ID }}
